@@ -134,6 +134,12 @@ object ServerConfiguration extends Logging {
 
   val BDP_SERVER_USER_URI =
     CommonVars("wds.linkis.server.user.restful.uri", "/api/rest_j/" + BDP_SERVER_VERSION + "/user")
+  // sso跳转请求前缀
+  val BDP_SSO_SERVER_USER_URI =
+    CommonVars(
+      "wds.linkis.server.user.sso.restful.uri",
+      "/api/rest_j/" + BDP_SERVER_VERSION + "/SSOUser/checkCode"
+    )
 
   val BDP_SERVER_RESTFUL_LOGIN_URI = CommonVars(
     "wds.linkis.server.user.restful.login.uri",

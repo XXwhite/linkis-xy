@@ -23,12 +23,11 @@ import org.apache.linkis.common.utils.{Logging, Utils}
 import org.apache.linkis.gateway.config.GatewayConfiguration
 import org.apache.linkis.gateway.config.GatewayConfiguration._
 import org.apache.linkis.gateway.http.GatewayContext
-import org.apache.linkis.gateway.security.sso.SSOInterceptor
+import org.apache.linkis.gateway.security.sso.{SSOInterceptor, UserSSORestful}
 import org.apache.linkis.gateway.security.token.TokenAuthentication
-import org.apache.linkis.server.{validateFailed, Message}
+import org.apache.linkis.server.{Message, validateFailed}
 import org.apache.linkis.server.conf.ServerConfiguration
 import org.apache.linkis.server.exception.{LoginExpireException, NonLoginException}
-
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.exception.ExceptionUtils
 
@@ -121,7 +120,25 @@ object SecurityFilter extends Logging {
         )
       }
       false
-    } else if (isPassAuthRequest && !GatewayConfiguration.ENABLE_SSO_LOGIN.getValue) {
+    } else if (
+      gatewayContext.getRequest.getRequestURI.startsWith(
+        ServerConfiguration.BDP_SSO_SERVER_USER_URI.getValue
+      )
+    ) {
+      // lichao 修复sso单点登录
+      Utils.tryCatch(userSSORestful.doUserRequest(gatewayContext)) { t =>
+        val message = t match {
+          case dwc: LinkisException => dwc.getMessage
+          case _ => "login failed! reason: " + ExceptionUtils.getRootCauseMessage(t)
+        }
+        logger.error("login failed! Reason: " + message, t)
+        filterResponse(
+          gatewayContext,
+          Message.error(message).<<(gatewayContext.getRequest.getRequestURI)
+        )
+      }
+      false
+    }else if (isPassAuthRequest && !GatewayConfiguration.ENABLE_SSO_LOGIN.getValue) {
       logger.info("No login needed for proxy uri: " + gatewayContext.getRequest.getRequestURI)
       true
     } else if (TokenAuthentication.isTokenRequest(gatewayContext)) {
@@ -150,7 +167,9 @@ object SecurityFilter extends Logging {
       } else if (GatewayConfiguration.ENABLE_SSO_LOGIN.getValue) {
         val user = SSOInterceptor.getSSOInterceptor.getUser(gatewayContext)
         if (StringUtils.isNotBlank(user)) {
-          GatewaySSOUtils.setLoginUser(gatewayContext.getRequest, user)
+          // GatewaySSOUtils.setLoginUser(gatewayContext.getRequest, user)
+          // lichao 修复sso单点登录成功时，heartbeat接口退出登录问题
+          GatewaySSOUtils.setLoginUser(gatewayContext, user)
           true
         } else if (isPassAuthRequest) {
           gatewayContext.getResponse.redirectTo(
@@ -196,6 +215,10 @@ object SecurityFilter extends Logging {
 
   def setUserRestful(userRestful: UserRestful): Unit = this.userRestful = userRestful
 
+  // lichao 修复sso单点登录
+  private var userSSORestful: UserSSORestful = _
+  def setUserSSORestful(userSSORestful: UserSSORestful): Unit = this.userSSORestful = userSSORestful
+  // lichao 修复sso单点登录
   def filterResponse(gatewayContext: GatewayContext, message: Message): Unit = {
     gatewayContext.getResponse.setStatus(Message.messageToHttpStatus(message))
     gatewayContext.getResponse.write(message)

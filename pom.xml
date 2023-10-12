@@ -245,7 +245,8 @@
     <spotless-maven-plugin.version>2.24.1</spotless-maven-plugin.version>
     <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
     <jacoco.skip>false</jacoco.skip>
-
+    <jwt.version>0.9.1</jwt.version>
+    <fastjson.version>2.0.14</fastjson.version>
     <!-- for JDK-17 test-->
     <extraJavaTestArgs>-XX:+IgnoreUnrecognizedVMOptions
       --add-opens=java.base/java.lang=ALL-UNNAMED

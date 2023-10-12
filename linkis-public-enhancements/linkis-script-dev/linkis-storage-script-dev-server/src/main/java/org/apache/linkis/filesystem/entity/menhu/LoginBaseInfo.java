@@ -15,14 +15,42 @@
  * limitations under the License.
  */
 
-package org.apache.linkis.filesystem.constant;
+package org.apache.linkis.filesystem.entity.menhu;
 
-public class WorkSpaceConstants {
-  public static final String XLSX_RESPONSE_CONTENT_TYPE =
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-  public static final String DEFAULT_DATE_TYPE = "yyyy-MM-dd HH:mm:ss";
-  public static final String LOCAL_RETURN_TYPE = "Local";
-  public static final String BLANK = "BLANK";
-  // lichao 修复sso单点登录
-  public static final String TOKEN_PREFIX = "Bearer ";
+import java.io.Serializable;
+
+/**
+ * @description: 门户跳转dss页成功后给dss页的登录信息实体
+ * @create: 2023/06/19
+ * @author: colourness
+ */
+public class LoginBaseInfo implements Serializable {
+  private String token;
+  private String username;
+
+  private String userId;
+
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public String getToken() {
+    return token;
+  }
+
+  public void setToken(String token) {
+    this.token = token;
+  }
+
+  public String getUserId() {
+    return userId;
+  }
+
+  public void setUserId(String userId) {
+    this.userId = userId;
+  }
 }

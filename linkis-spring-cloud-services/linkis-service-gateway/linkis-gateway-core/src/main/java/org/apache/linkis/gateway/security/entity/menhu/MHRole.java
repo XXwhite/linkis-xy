@@ -15,14 +15,45 @@
  * limitations under the License.
  */
 
-package org.apache.linkis.filesystem.constant;
+package org.apache.linkis.gateway.security.entity.menhu;
 
-public class WorkSpaceConstants {
-  public static final String XLSX_RESPONSE_CONTENT_TYPE =
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-  public static final String DEFAULT_DATE_TYPE = "yyyy-MM-dd HH:mm:ss";
-  public static final String LOCAL_RETURN_TYPE = "Local";
-  public static final String BLANK = "BLANK";
-  // lichao 修复sso单点登录
-  public static final String TOKEN_PREFIX = "Bearer ";
+import java.io.Serializable;
+import java.util.List;
+
+/**
+ * @description: 门户角色
+ * @create: 2023/04/12
+ * @author: colourness
+ */
+public class MHRole implements Serializable {
+  // 角色id
+  private String roleId;
+  // 系统ID
+  private String systemId;
+  // 菜单列表
+  private List<MHMenu> menuList;
+
+  public String getRoleId() {
+    return roleId;
+  }
+
+  public void setRoleId(String roleId) {
+    this.roleId = roleId;
+  }
+
+  public String getSystemId() {
+    return systemId;
+  }
+
+  public void setSystemId(String systemId) {
+    this.systemId = systemId;
+  }
+
+  public List<MHMenu> getMenuList() {
+    return menuList;
+  }
+
+  public void setMenuList(List<MHMenu> menuList) {
+    this.menuList = menuList;
+  }
 }

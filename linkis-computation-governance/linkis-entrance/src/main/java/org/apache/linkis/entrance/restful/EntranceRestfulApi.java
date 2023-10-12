@@ -23,6 +23,7 @@ import org.apache.linkis.entrance.EntranceServer;
 import org.apache.linkis.entrance.conf.EntranceConfiguration;
 import org.apache.linkis.entrance.execute.EntranceJob;
 import org.apache.linkis.entrance.log.LogReader;
+import org.apache.linkis.entrance.server.ShareSystemPermissionTabServer;
 import org.apache.linkis.entrance.utils.JobHistoryHelper;
 import org.apache.linkis.entrance.utils.RGBUtils;
 import org.apache.linkis.entrance.vo.YarnResourceWithStatusVo;
@@ -42,6 +43,7 @@ import org.apache.linkis.server.utils.ModuleUserUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import org.eclipse.jetty.util.ajax.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,12 +54,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import scala.Option;
 
@@ -78,11 +75,18 @@ public class EntranceRestfulApi implements EntranceRestfulRemote {
 
   private EntranceServer entranceServer;
 
+  private ShareSystemPermissionTabServer shareSysPermissionServer;
+
   private static final Logger logger = LoggerFactory.getLogger(EntranceRestfulApi.class);
 
   @Autowired
   public void setEntranceServer(EntranceServer entranceServer) {
     this.entranceServer = entranceServer;
+  }
+
+  @Autowired
+  public void setShareSysPermissionServer(ShareSystemPermissionTabServer shareSysPermissionServer) {
+    this.shareSysPermissionServer = shareSysPermissionServer;
   }
 
   /**
@@ -95,7 +99,7 @@ public class EntranceRestfulApi implements EntranceRestfulRemote {
   @Override
   @RequestMapping(path = "/execute", method = RequestMethod.POST)
   public Message execute(HttpServletRequest req, @RequestBody Map<String, Object> json) {
-    Message message = null;
+    // Message message = null;
     logger.info("Begin to get an execID");
     json.put(TaskConstant.EXECUTE_USER, ModuleUserUtils.getOperationUser(req));
     json.put(TaskConstant.SUBMIT_USER, SecurityFilter.getLoginUsername(req));
@@ -106,6 +110,15 @@ public class EntranceRestfulApi implements EntranceRestfulRemote {
     }
     String ip = JobHistoryHelper.getRequestIpAddr(req);
     map.put(TaskConstant.REQUEST_IP, ip);
+    // lichao 添加拦截jdbc类型请求，校验共享平台用户数据源权限-开始
+    Message message = shareSysPermissionServer.shareSysPermissionTabCheck(req, json);
+    // logger.error("message 对象内容 ={}", message);
+    if (!Objects.isNull(message)) {
+      logger.error("校验共享平台权限异常={}", JSON.toString(message));
+      return message;
+    }
+    logger.info("shareSysPermissionTabCheck 方法里message=null");
+    // lichao 添加拦截jdbc类型请求，校验共享平台用户数据源权限-结束
     Job job = entranceServer.execute(json);
     JobRequest jobReq = ((EntranceJob) job).getJobRequest();
     Long jobReqId = jobReq.getId();
