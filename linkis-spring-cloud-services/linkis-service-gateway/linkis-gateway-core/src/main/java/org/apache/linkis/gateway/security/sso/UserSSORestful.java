@@ -17,8 +17,6 @@
 
 package org.apache.linkis.gateway.security.sso;
 
-import com.alibaba.fastjson.JSON;
-import org.apache.commons.lang.StringUtils;
 import org.apache.linkis.gateway.config.GatewayConfiguration;
 import org.apache.linkis.gateway.http.GatewayContext;
 import org.apache.linkis.gateway.security.GatewaySSOUtils;
@@ -31,16 +29,22 @@ import org.apache.linkis.server.BDPJettyServerHelper;
 import org.apache.linkis.server.Message;
 import org.apache.linkis.server.conf.ServerConfiguration;
 import org.apache.linkis.server.security.SSOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.commons.lang.StringUtils;
+
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.Cookie;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import com.alibaba.fastjson.JSON;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @description: 用户SSO接口
@@ -57,6 +61,7 @@ public class UserSSORestful {
       userURI += "/";
     }*/
     // String path = gatewayContext.getRequest().getRequestURI().replace(userURI, "");
+    logger.info("***** UserSSORestful doUserRequest *****");
     Message message = null;
     try {
       message = checkLogin(gatewayContext);
@@ -87,6 +92,9 @@ public class UserSSORestful {
   private String MH_CHECK_CODE = "checkCode";
 
   public Message tryLoginSSO(GatewayContext gatewayContext) {
+    logger.info("***** UserSSORestful tryLoginSSO *****");
+    logger.info(
+        "***** gatewayContext.getRequest={}", JSON.toJSONString(gatewayContext.getRequest()));
     String requestBody = gatewayContext.getRequest().getRequestBody();
     if (StringUtils.isBlank(requestBody)) {
       return Message.error("未获取到用户checkCode信息").data("token", "");
@@ -103,7 +111,7 @@ public class UserSSORestful {
     getTokenBody.put("checkCode", checkCode);
     String getTokenRequestBody = JSON.toJSONString(getTokenBody);
     Map<String, String> getTokenHeader = new HashMap<>();
-    getTokenHeader.put("Service-Id", "BkFS2H");
+    getTokenHeader.put("Service-Id", SSOCommonConfig.BIG_DATA_MENHU_SERVICE_ID.getValue());
     getTokenHeader.put("Content-Type", "application/json");
     logger.info(
         "getTokenRequestEntity.url={}", SSOCommonConfig.BIG_DATA_MENHU_GETTOKEN_URL.getValue());
@@ -128,7 +136,7 @@ public class UserSSORestful {
     // 调用门户接口通过token获取用户信息
     Map<String, String> getUserHeaders = new HashMap<String, String>();
     getUserHeaders.put("Authorization", Constants.TOKEN_PREFIX + tokenResult.getToken());
-    getUserHeaders.put("Service-Id", "BkFS2H");
+    getUserHeaders.put("Service-Id", SSOCommonConfig.BIG_DATA_MENHU_SERVICE_ID.getValue());
     getUserHeaders.put("content-type", "application/json");
     Map<String, Object> getUserBody = new HashMap<String, Object>();
     getUserBody.put("systemKey", SSOCommonConfig.BIG_DATA_MENHU_SYSTEMKEY.getValue());

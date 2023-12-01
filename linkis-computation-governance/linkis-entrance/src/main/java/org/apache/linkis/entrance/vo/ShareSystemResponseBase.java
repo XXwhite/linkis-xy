@@ -15,20 +15,44 @@
  * limitations under the License.
  */
 
-package org.apache.linkis.entrance.constant;
+package org.apache.linkis.entrance.vo;
 
-/** unify bean's spring config name */
-public final class ServiceNameConsts {
-  private ServiceNameConsts() {}
+import java.io.Serializable;
 
-  public static final String ENTRANCE_CONTEXT = "entranceContext";
+/**
+ * @description: 共享系統接口返回值-对接王彦斌
+ * @create: 2023/06/12
+ * @author: colourness
+ */
+public class ShareSystemResponseBase<T> implements Serializable {
+  // 返回码
+  private String code;
+  // 返回信息
+  private String msg;
+  // 返回值实体
+  private T data;
 
-  public static final String ENTRANCE_SERVER = "entranceServer";
+  public String getCode() {
+    return code;
+  }
 
-  public static final String ENTRANCE_INTERCEPTOR = "entranceInterceptors";
+  public void setCode(String code) {
+    this.code = code;
+  }
 
-  //lichao 添加
-  public static final String SHARE_SYS_PERMISSION_SERVER = "shareSysPermissionServer";
+  public String getMsg() {
+    return msg;
+  }
 
-  public static final String TOKEN_PREFIX = "Bearer ";
+  public void setMsg(String msg) {
+    this.msg = msg;
+  }
+
+  public T getData() {
+    return data;
+  }
+
+  public void setData(T data) {
+    this.data = data;
+  }
 }

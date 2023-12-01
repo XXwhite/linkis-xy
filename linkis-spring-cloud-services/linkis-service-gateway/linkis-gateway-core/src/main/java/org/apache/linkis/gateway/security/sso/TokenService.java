@@ -17,16 +17,12 @@
 
 package org.apache.linkis.gateway.security.sso;
 
-import com.alibaba.fastjson.JSON;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import org.apache.linkis.gateway.http.GatewayHttpRequest;
 import org.apache.linkis.gateway.security.conf.SSOCommonConfig;
 import org.apache.linkis.gateway.security.constants.Constants;
 import org.apache.linkis.gateway.security.entity.menhu.MHToken;
 import org.apache.linkis.gateway.security.entity.menhu.ResponseBase;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -34,6 +30,12 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.alibaba.fastjson.JSON;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author colourness

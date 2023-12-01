@@ -62,20 +62,23 @@ public class WorkSpaceConfiguration {
       CommonVars$.MODULE$.apply("linkis.os.user.group.enabled", true);
   // lichao 修复sso单点登录
   public static final CommonVars<String> BIG_DATA_MENHU_SYSTEMKEY =
-          CommonVars.apply("big.data.menhu.systemKey", "");
+      CommonVars.apply("big.data.menhu.systemKey", "");
 
   public static final CommonVars<String> BIG_DATA_MENHU_GETTOKEN_URL =
-          CommonVars.apply(
-                  "big.data.menhu.gettoken.url", "https://gateway.zsj.jl.cegn.cn:443/thirdLogin/getToken");
+      CommonVars.apply(
+          "big.data.menhu.gettoken.url", "https://gateway.zsj.jl.cegn.cn:443/thirdLogin/getToken");
 
   public static final CommonVars<String> BIG_DATA_MENHU_GETUSERBYTOKEN_URL =
-          CommonVars.apply(
-                  "big.data.menhu.getuserbytoken.url",
-                  "https://gateway.zsj.jl.cegn.cn:443/thirdLogin/getUserByToken");
+      CommonVars.apply(
+          "big.data.menhu.getuserbytoken.url",
+          "https://gateway.zsj.jl.cegn.cn:443/thirdLogin/getUserByToken");
 
   public static final CommonVars<String> BIG_DATA_MENHU_GETURL_URL =
-          CommonVars.apply(
-                  "big.data.menhu.geturl.url", "https://gateway.zsj.jl.cegn.cn:443/thirdLogin/getUrl");
+      CommonVars.apply(
+          "big.data.menhu.geturl.url", "https://gateway.zsj.jl.cegn.cn:443/thirdLogin/getUrl");
+
+  public static final CommonVars<String> BIG_DATA_MENHU_SERVICE_ID =
+      CommonVars.apply("big.data.menhu.service.id", "BkFS2H");
   // lichao 修复sso单点登录
   public static final ExecutorService executorService =
       new ThreadPoolExecutor(

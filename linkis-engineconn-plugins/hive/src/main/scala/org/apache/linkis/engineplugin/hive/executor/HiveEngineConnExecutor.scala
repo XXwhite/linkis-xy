@@ -124,9 +124,10 @@ class HiveEngineConnExecutor(
 
   override def init(): Unit = {
     LOG.info(s"Ready to change engine state!")
-    if (HadoopConf.KEYTAB_PROXYUSER_ENABLED.getValue) {
-      System.setProperty("javax.security.auth.useSubjectCredsOnly", "false");
-    }
+    // ***** lichao 添加kerberose跳过认证
+    // if (HadoopConf.KEYTAB_PROXYUSER_ENABLED.getValue) {
+    System.setProperty("javax.security.auth.useSubjectCredsOnly", "false");
+    // }
     setCodeParser(new SQLCodeParser)
     super.init()
   }

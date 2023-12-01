@@ -17,24 +17,27 @@
 
 package org.apache.linkis.gateway.security.sso;
 
-import com.alibaba.fastjson.JSON;
-import org.apache.commons.lang.StringUtils;
 import org.apache.linkis.gateway.http.GatewayContext;
 import org.apache.linkis.gateway.security.conf.SSOCommonConfig;
 import org.apache.linkis.gateway.security.constants.Constants;
 import org.apache.linkis.gateway.security.entity.menhu.MHLoginUrl;
 import org.apache.linkis.gateway.security.entity.menhu.MHUserResult;
 import org.apache.linkis.gateway.security.entity.menhu.ResponseBase;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.http.Cookie;
+
 import java.net.URI;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import com.alibaba.fastjson.JSON;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author colourness

@@ -17,24 +17,28 @@
 
 package org.apache.linkis.filesystem.restful.api;
 
-import com.alibaba.fastjson.JSON;
-import org.apache.commons.lang.StringUtils;
 import org.apache.linkis.filesystem.conf.WorkSpaceConfiguration;
 import org.apache.linkis.filesystem.constant.WorkSpaceConstants;
 import org.apache.linkis.filesystem.entity.menhu.*;
 import org.apache.linkis.filesystem.util.HttpUtils;
 import org.apache.linkis.server.Message;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.commons.lang.StringUtils;
+
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import com.alibaba.fastjson.JSON;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @description: 获取门户token接口
@@ -53,7 +57,7 @@ public class GetMenHuTokenRestfulApi {
     getUrlBody.put("systemKey", WorkSpaceConfiguration.BIG_DATA_MENHU_SYSTEMKEY.getValue());
     String getUrlRequestBody = JSON.toJSONString(getUrlBody);
     Map<String, String> getUrlHeader = new HashMap<>();
-    getUrlHeader.put("Service-Id", "BkFS2H");
+    getUrlHeader.put("Service-Id", WorkSpaceConfiguration.BIG_DATA_MENHU_SERVICE_ID.getValue());
     getUrlHeader.put("Content-Type", "application/json");
     logger.info(
         "getUrlRequestEntity.url={}", WorkSpaceConfiguration.BIG_DATA_MENHU_GETURL_URL.getValue());
@@ -96,7 +100,7 @@ public class GetMenHuTokenRestfulApi {
     getTokenBody.put("checkCode", requestCheckCode.getCheckCode());
     String getTokenRequestBody = JSON.toJSONString(getTokenBody);
     Map<String, String> getTokenHeader = new HashMap<>();
-    getTokenHeader.put("Service-Id", "BkFS2H");
+    getTokenHeader.put("Service-Id", WorkSpaceConfiguration.BIG_DATA_MENHU_SERVICE_ID.getValue());
     getTokenHeader.put("Content-Type", "application/json");
     logger.info(
         "getTokenRequestEntity.url={}",
@@ -122,7 +126,7 @@ public class GetMenHuTokenRestfulApi {
       // 调用门户接口通过token获取用户信息
       Map<String, String> getUserHeaders = new HashMap<String, String>();
       getUserHeaders.put("Authorization", WorkSpaceConstants.TOKEN_PREFIX + tokenResult.getToken());
-      getUserHeaders.put("Service-Id", "BkFS2H");
+      getUserHeaders.put("Service-Id", WorkSpaceConfiguration.BIG_DATA_MENHU_SERVICE_ID.getValue());
       getUserHeaders.put("content-type", "application/json");
       Map<String, Object> getUserBody = new HashMap<String, Object>();
       getUserBody.put("systemKey", WorkSpaceConfiguration.BIG_DATA_MENHU_SYSTEMKEY.getValue());
@@ -152,5 +156,4 @@ public class GetMenHuTokenRestfulApi {
     }
     return Message.error("未获取到用户token信息").data("token", "");
   }
-
 }

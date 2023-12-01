@@ -45,6 +45,8 @@ public class ModuleUserUtils {
    * @return
    */
   public static ProxyUserEntity getProxyUserEntity(HttpServletRequest httpServletRequest) {
+    /* LOGGER.info(
+    String.format("ModuleUserUtils.getProxyUserEntity()%s", httpServletRequest.toString())); */
     String loginUser = SecurityFilter.getLoginUsername(httpServletRequest);
     Option<String> proxyUserUsername = ProxyUserSSOUtils.getProxyUserUsername(httpServletRequest);
     ProxyUserEntity proxyUserEntity = new ProxyUserEntity();

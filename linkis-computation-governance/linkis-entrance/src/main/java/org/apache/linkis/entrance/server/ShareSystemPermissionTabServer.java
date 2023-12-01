@@ -17,11 +17,6 @@
 
 package org.apache.linkis.entrance.server;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.linkis.entrance.constant.ServiceNameConsts;
 import org.apache.linkis.entrance.parser.SqlParserUtils;
 import org.apache.linkis.entrance.vo.ShareSystemDBInfoResponse;
@@ -29,16 +24,25 @@ import org.apache.linkis.entrance.vo.ShareSystemResponseBase;
 import org.apache.linkis.protocol.constants.TaskConstant;
 import org.apache.linkis.server.Message;
 import org.apache.linkis.server.conf.ServerConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @description: 共享系统库表权限服务

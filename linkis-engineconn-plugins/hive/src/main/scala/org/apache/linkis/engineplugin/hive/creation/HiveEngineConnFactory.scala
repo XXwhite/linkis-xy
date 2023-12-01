@@ -38,6 +38,7 @@ import org.apache.linkis.engineplugin.hive.executor.{
   HiveEngineConnExecutor
 }
 import org.apache.linkis.hadoop.common.utils.HDFSUtils
+import org.apache.linkis.hadoop.common.utils.HDFSUtils.{getConfigurationByLabel, getKeytabPath}
 import org.apache.linkis.manager.engineplugin.common.conf.EnvConfiguration
 import org.apache.linkis.manager.label.entity.engine.{EngineType, RunType}
 import org.apache.linkis.manager.label.entity.engine.EngineType.EngineType
@@ -50,7 +51,7 @@ import org.apache.hadoop.hive.ql.Driver
 import org.apache.hadoop.hive.ql.session.SessionState
 import org.apache.hadoop.security.UserGroupInformation
 
-import java.io.{ByteArrayOutputStream, PrintStream}
+import java.io.{ByteArrayOutputStream, File, PrintStream}
 import java.nio.file.Paths
 import java.security.PrivilegedExceptionAction
 import java.util
@@ -107,15 +108,27 @@ class HiveEngineConnFactory extends ComputationSingleExecutorEngineConnFactory w
 
   def doCreateHiveConcurrentSession(options: util.Map[String, String]): HiveConcurrentSession = {
     val hiveConf: HiveConf = getHiveConf(options)
-    val ugi = HDFSUtils.getUserGroupInformation(Utils.getJvmUser)
+    // lichao修改华为kerberose认证使用统一hadoop用户
+    // val ugi = HDFSUtils.getUserGroupInformation(Utils.getJvmUser)
+    val ugi = HDFSUtils.getUserGroupInformation("hadoop")
     val baos = new ByteArrayOutputStream()
     val sessionState: SessionState = getSessionState(hiveConf, ugi, baos)
     HiveConcurrentSession(sessionState, ugi, hiveConf, baos)
   }
 
   def doCreateHiveSession(options: util.Map[String, String]): HiveSession = {
+
     val hiveConf: HiveConf = getHiveConf(options)
-    val ugi = HDFSUtils.getUserGroupInformation(Utils.getJvmUser)
+    // lichao修改华为kerberose认证使用统一hadoop用户
+    // val ugi = HDFSUtils.getUserGroupInformation(Utils.getJvmUser)
+    val path = new File(getKeytabPath(null), "hadoop" + ".keytab").getPath
+    logger.info("******* lichao SparkEngineConnFactory createSparkSession path={}", path)
+    UserGroupInformation.setConfiguration(getConfigurationByLabel("hadoop", null))
+    UserGroupInformation.loginUserFromKeytab("hadoop", path)
+    logger.info("***** lichao HiveEngineConnFactory doCreateHiveSession start")
+    val ugi = HDFSUtils.getUserGroupInformation("hadoop")
+    logger.info("***** lichao HiveEngineConnFactory doCreateHiveSession ugi=" + ugi.toString)
+    logger.info("***** lichao HiveEngineConnFactory doCreateHiveSession ugi=" + ugi)
     val baos = new ByteArrayOutputStream()
     val sessionState: SessionState = getSessionState(hiveConf, ugi, baos)
     HiveSession(sessionState, ugi, hiveConf, baos)

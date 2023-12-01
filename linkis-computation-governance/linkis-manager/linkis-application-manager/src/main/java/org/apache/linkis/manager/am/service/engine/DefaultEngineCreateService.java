@@ -102,6 +102,8 @@ public class DefaultEngineCreateService extends AbstractEngineService
   public EngineNode createEngine(EngineCreateRequest engineCreateRequest, Sender sender)
       throws LinkisRetryException {
     long startTime = System.currentTimeMillis();
+    // **** lichao 修改
+    engineCreateRequest.setUser("hadoop");
     String taskId = JobUtils.getJobIdFromStringMap(engineCreateRequest.getProperties());
     logger.info("Task: {} start to create Engine for request: {}.", taskId, engineCreateRequest);
     LabelBuilderFactory labelBuilderFactory = LabelBuilderFactoryContext.getLabelBuilderFactory();
@@ -207,7 +209,6 @@ public class DefaultEngineCreateService extends AbstractEngineService
       }
       throw t;
     }
-
     logger.info(
         "Task: {} finished to create engineConn {}. ticketId is {} ",
         taskId,
@@ -337,12 +338,16 @@ public class DefaultEngineCreateService extends AbstractEngineService
   }
 
   private boolean ensuresIdle(EngineNode engineNode, String resourceTicketId) {
+    logger.info("**** lichao DefaultEngineCreateService ensuresIdle engineNode={}", engineNode);
     EngineNode engineNodeInfo = getEngineNodeManager().getEngineNodeInfoByDB(engineNode);
+    logger.info(
+        "**** lichao DefaultEngineCreateService ensuresIdle engineNodeInfo={}", engineNodeInfo);
     if (null == engineNodeInfo) {
       return false;
     }
     if (NodeStatus.isCompleted(engineNodeInfo.getNodeStatus())) {
       NodeMetrics metrics = nodeMetricManagerPersistence.getNodeMetrics(engineNodeInfo);
+      logger.info("**** lichao DefaultEngineCreateService ensuresIdle metrics={}", metrics);
       Pair<String, Optional<Boolean>> errorInfo = getStartErrorInfo(metrics.getHeartBeatMsg());
       if (errorInfo.getRight().isPresent()) {
         throw new LinkisRetryException(

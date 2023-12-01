@@ -198,6 +198,7 @@ object SecurityFilter {
   }
 
   def getLoginUsername(req: HttpServletRequest): String = {
+    // logger.info(String.format("SecurityFilter.getLoginUsername()%s", req.toString()));
     if (Configuration.IS_TEST_MODE.getValue) {
       val testUser = ServerConfiguration.BDP_TEST_USER.getValue
       if (StringUtils.isBlank(testUser)) {

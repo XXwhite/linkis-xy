@@ -98,6 +98,8 @@ class DefaultGatewayParser(gatewayParsers: Array[GatewayParser]) extends Abstrac
     gatewayContext.getRequest.getMethod.toUpperCase(Locale.getDefault) != "GET" &&
       (gatewayContext.getRequest.getRequestURI match {
         case uri if uri.startsWith(ServerConfiguration.BDP_SERVER_USER_URI.getValue) => true
+        // lichao 修复sso单点登录
+        case uri if uri.startsWith(ServerConfiguration.BDP_SSO_SERVER_USER_URI.getValue) => true
         case _ => gatewayParsers.exists(_.shouldContainRequestBody(gatewayContext))
       })
 

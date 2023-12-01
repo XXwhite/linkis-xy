@@ -105,6 +105,8 @@ public abstract class FileSystem implements Fs {
 
   public boolean isOwner(String dest) throws IOException {
     FsPath fsPath = get(dest);
+    LOG.info("*******lichao isOwner user=" + user);
+    LOG.info("*******lichao isOwner fsPath.getOwner()=" + fsPath.getOwner());
     return user.equals(fsPath.getOwner()) || user.equals(rootUserName());
   }
 }

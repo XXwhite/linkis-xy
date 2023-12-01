@@ -100,6 +100,7 @@ object HDFSUtils extends Logging {
   }
 
   def getConfiguration(user: String, hadoopConfDir: String): Configuration = {
+    logger.info("******** lichao getConfiguration hadoopConfDir=" + hadoopConfDir);
     val confPath = new File(hadoopConfDir)
     if (!confPath.exists() || confPath.isFile) {
       throw new RuntimeException(
@@ -147,6 +148,7 @@ object HDFSUtils extends Logging {
         // use the same cacheLabel to operate HDFSFileSystemContainer, like close or remove.
         // At the same time, we don't want to change the behavior of createFileSystem which is out of HDFSUtils,
         // so we continue to use the original label to createFileSystem.
+        logger.info("*******lichao getHDFSUserFileSystem 1");
         val newHDFSFileSystemContainer =
           new HDFSFileSystemContainer(createFileSystem(userName, label, conf), userName, cacheLabel)
         fileSystemCache.put(cacheKey, newHDFSFileSystemContainer)
@@ -157,6 +159,7 @@ object HDFSUtils extends Logging {
       hdfsFileSystemContainer.getFileSystem
     }
   } else {
+    logger.info("*******lichao getHDFSUserFileSystem 2");
     createFileSystem(userName, label, conf)
   }
 
@@ -218,11 +221,15 @@ object HDFSUtils extends Logging {
 
   def getUserGroupInformation(userName: String, label: String): UserGroupInformation = {
     if (isKerberosEnabled(label)) {
+      logger.info("*******lichao getUserGroupInformation 1");
       if (!isKeytabProxyUserEnabled(label)) {
-        val path = new File(getKeytabPath(label), userName + ".keytab").getPath
+        logger.info("*******lichao getUserGroupInformation 2");
+        val path = new File(getKeytabPath(label), "hadoop" + ".keytab").getPath
         val user = getKerberosUser(userName, label)
+        logger.info("*******lichao getUserGroupInformation user=" + user);
+        logger.info("*******lichao getUserGroupInformation path=" + path);
         UserGroupInformation.setConfiguration(getConfigurationByLabel(userName, label))
-        UserGroupInformation.loginUserFromKeytabAndReturnUGI(user, path)
+        UserGroupInformation.loginUserFromKeytabAndReturnUGI("hadoop", path)
       } else {
         val superUser = getKeytabSuperUser(label)
         val path = new File(getKeytabPath(label), superUser + ".keytab").getPath
@@ -255,6 +262,7 @@ object HDFSUtils extends Logging {
   }
 
   def getKerberosUser(userName: String, label: String): String = {
+    logger.info("*******lichao getKerberosUser userName=" + userName + " --- label=" + label);
     var user = userName
     if (label == null) {
       if (KEYTAB_HOST_ENABLED.getValue) {

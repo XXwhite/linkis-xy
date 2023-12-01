@@ -24,6 +24,7 @@ import org.apache.linkis.gateway.security.{
   SecurityHook,
   UserRestful
 }
+import org.apache.linkis.gateway.security.sso.UserSSORestful
 import org.apache.linkis.gateway.security.token.TokenAuthentication
 
 import org.springframework.beans.factory.ObjectProvider
@@ -46,9 +47,14 @@ class GatewaySpringConfiguration {
   @Autowired
   private var tokenService: TokenService = _
 
+  @Autowired
+  private var userSSORestful: UserSSORestful = _
+
   @PostConstruct
   def init(): Unit = {
     SecurityFilter.setUserRestful(userRestful)
+    // lichao 修复sso单点登录
+    SecurityFilter.setUserSSORestful(userSSORestful)
     TokenAuthentication.setTokenService(tokenService)
   }
 

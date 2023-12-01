@@ -112,6 +112,8 @@ public class HDFSFileSystem extends FileSystem {
       throw new IOException("You have not permission to access path " + path);
     }
     boolean result = fs.mkdirs(new Path(path));
+    logger.info("******* lichao mkdir result={}", result);
+    logger.info("******* lichao mkdir path={}", path);
     this.setPermission(new FsPath(path), this.getDefaultFolderPerm());
     return result;
   }
@@ -134,6 +136,7 @@ public class HDFSFileSystem extends FileSystem {
   @Override
   public boolean setPermission(FsPath dest, String permission) throws IOException {
     String path = checkHDFSPath(dest.getPath());
+    logger.info("******* lichao setPermission path={}", path);
     if (!isOwner(path)) {
       throw new IOException(path + " only can be set by owner.");
     }
@@ -177,7 +180,7 @@ public class HDFSFileSystem extends FileSystem {
         && properties.containsKey(StorageConfiguration.PROXY_USER.key())) {
       user = StorageConfiguration.PROXY_USER.getValue(properties);
     }
-
+    logger.info("******* lichao init user={}", user);
     if (user == null) {
       throw new IOException("User cannot be empty(用户不能为空)");
     }

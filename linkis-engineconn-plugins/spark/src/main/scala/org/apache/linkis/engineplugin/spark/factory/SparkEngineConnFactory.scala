@@ -32,6 +32,7 @@ import org.apache.linkis.engineplugin.spark.exception.{
   SparkCreateFileException,
   SparkSessionNullException
 }
+import org.apache.linkis.hadoop.common.utils.HDFSUtils.{getConfigurationByLabel, getKeytabPath}
 import org.apache.linkis.manager.engineplugin.common.conf.EnvConfiguration
 import org.apache.linkis.manager.engineplugin.common.creation.{
   ExecutorFactory,
@@ -44,6 +45,7 @@ import org.apache.linkis.manager.label.entity.engine.EngineType.EngineType
 import org.apache.linkis.server.JMap
 
 import org.apache.commons.lang3.StringUtils
+import org.apache.hadoop.security.UserGroupInformation
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.sql.{SparkSession, SQLContext}
 import org.apache.spark.util.SparkUtils
@@ -226,7 +228,10 @@ class SparkEngineConnFactory extends MultiExecutorEngineConnFactory with Logging
     if (SparkConfiguration.LINKIS_SPARK_ETL_SUPPORT_HUDI.getValue) {
       conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
     }
-
+    val path = new File(getKeytabPath(null), "hadoop" + ".keytab").getPath
+    logger.info("******* lichao SparkEngineConnFactory createSparkSession path={}", path)
+    UserGroupInformation.setConfiguration(getConfigurationByLabel("hadoop", null))
+    UserGroupInformation.loginUserFromKeytab("hadoop", path)
     val builder = SparkSession.builder.config(conf)
     builder.enableHiveSupport().getOrCreate()
   }

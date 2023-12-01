@@ -49,7 +49,8 @@ public class BuildHDFSFileSystem implements BuildFactory {
       enhancer.setCallback(IOMethodInterceptorFactory.getIOMethodInterceptor(fsName()));
       fs = (FileSystem) enhancer.create();
     }
-    fs.setUser(proxyUser);
+    // *******lichao 修改
+    fs.setUser("hadoop");
     return fs;
   }
 

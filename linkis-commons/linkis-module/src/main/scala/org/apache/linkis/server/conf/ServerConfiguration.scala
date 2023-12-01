@@ -134,6 +134,7 @@ object ServerConfiguration extends Logging {
 
   val BDP_SERVER_USER_URI =
     CommonVars("wds.linkis.server.user.restful.uri", "/api/rest_j/" + BDP_SERVER_VERSION + "/user")
+
   // sso跳转请求前缀
   val BDP_SSO_SERVER_USER_URI =
     CommonVars(
@@ -146,8 +147,20 @@ object ServerConfiguration extends Logging {
     new File(BDP_SERVER_USER_URI.getValue, "login").getPath
   )
 
+  // 共享系统权限接口地址 lichao添加
+  val BDP_SHARE_SYS_PERMISSION_URI =
+    CommonVars(
+      "wds.linkis.server.share.sys.permission.uri",
+      "https://gateway.zsj.jl.cegn.cn:443/analysis/management/withinAuthority"
+    )
+
   val BDP_SERVER_RESTFUL_PASS_AUTH_REQUEST_URI =
     CommonVars("wds.linkis.server.user.restful.uri.pass.auth", "").getValue.split(",")
+
+  // 接口eolinker的serviceId
+  val MH_SHARE_SYS_PER_SERVICE_ID = CommonVars("wds.linkis.entrance.share.service.id", "BkFS2H")
+  // eolinker接口host地址
+  val MH_EOLINKER_HOST = CommonVars("wds.linkis.entrance.eolinker.host", "gateway.zsj.jl.cegn.cn")
 
   val BDP_SERVER_SECURITY_SSL_URI = CommonVars(
     "wds.linkis.server.user.security.ssl.uri",

@@ -25,9 +25,10 @@ import org.apache.linkis.gateway.config.GatewayConfiguration._
 import org.apache.linkis.gateway.http.GatewayContext
 import org.apache.linkis.gateway.security.sso.{SSOInterceptor, UserSSORestful}
 import org.apache.linkis.gateway.security.token.TokenAuthentication
-import org.apache.linkis.server.{Message, validateFailed}
+import org.apache.linkis.server.{validateFailed, Message}
 import org.apache.linkis.server.conf.ServerConfiguration
 import org.apache.linkis.server.exception.{LoginExpireException, NonLoginException}
+
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.exception.ExceptionUtils
 
@@ -121,11 +122,12 @@ object SecurityFilter extends Logging {
       }
       false
     } else if (
-      gatewayContext.getRequest.getRequestURI.startsWith(
-        ServerConfiguration.BDP_SSO_SERVER_USER_URI.getValue
-      )
+        gatewayContext.getRequest.getRequestURI.startsWith(
+          ServerConfiguration.BDP_SSO_SERVER_USER_URI.getValue
+        )
     ) {
       // lichao 修复sso单点登录
+      logger.info("****userSSORestful.toString****" + userSSORestful.toString)
       Utils.tryCatch(userSSORestful.doUserRequest(gatewayContext)) { t =>
         val message = t match {
           case dwc: LinkisException => dwc.getMessage
@@ -138,7 +140,7 @@ object SecurityFilter extends Logging {
         )
       }
       false
-    }else if (isPassAuthRequest && !GatewayConfiguration.ENABLE_SSO_LOGIN.getValue) {
+    } else if (isPassAuthRequest && GatewayConfiguration.ENABLE_SSO_LOGIN.getValue) {
       logger.info("No login needed for proxy uri: " + gatewayContext.getRequest.getRequestURI)
       true
     } else if (TokenAuthentication.isTokenRequest(gatewayContext)) {
@@ -218,6 +220,7 @@ object SecurityFilter extends Logging {
   // lichao 修复sso单点登录
   private var userSSORestful: UserSSORestful = _
   def setUserSSORestful(userSSORestful: UserSSORestful): Unit = this.userSSORestful = userSSORestful
+
   // lichao 修复sso单点登录
   def filterResponse(gatewayContext: GatewayContext, message: Message): Unit = {
     gatewayContext.getResponse.setStatus(Message.messageToHttpStatus(message))
