@@ -23,6 +23,7 @@ import org.apache.linkis.gateway.security.constants.Constants;
 import org.apache.linkis.gateway.security.entity.menhu.MHLoginUrl;
 import org.apache.linkis.gateway.security.entity.menhu.MHUserResult;
 import org.apache.linkis.gateway.security.entity.menhu.ResponseBase;
+import org.apache.linkis.gateway.security.utils.PinyinUtil;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -111,9 +112,13 @@ public class InternalSSOInterceptor implements SSOInterceptor {
       // if (StringUtils.isBlank(userName)) {
       // GatewaySSOUtils.setLoginUser(gatewayContext, userResult.getUser().getUserId());
       // }
-
       // TODO 需要确认用户是否在dss平台已创建，如果不存在需要跳到固定页面提示
-      return userResult.getUser().getUserId();
+      // 使用用户姓名拼音缩写+门户用户id
+      if (StringUtils.isBlank(userResult.getUser().getUserName())) {
+        return "";
+      }
+      return PinyinUtil.toPinyinSub(userResult.getUser().getUserName())
+          + userResult.getUser().getUserId();
     } else {
       logger.warn("获取门户用户信息接口异常");
     }
@@ -175,6 +180,8 @@ public class InternalSSOInterceptor implements SSOInterceptor {
             .filter(c -> SSOCommonConfig.SSO_TOKEN_HEADER.getValue().equals(c.getName()))
             .collect(Collectors.toList());
     Cookie cookie = null;
+    logger.info("logout cookieList={}", cookieList);
+    logger.info("logout getCookies={}", gatewayContext.getRequest().getCookies());
     if (!cookieList.isEmpty()) {
       cookie = cookieList.get(0);
       logger.info("SSO_COOKIE_NAME {}", cookie.getName());

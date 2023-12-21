@@ -27,7 +27,7 @@ public final class ServiceNameConsts {
 
   public static final String ENTRANCE_INTERCEPTOR = "entranceInterceptors";
 
-  //lichao 添加
+  // lichao 添加
   public static final String SHARE_SYS_PERMISSION_SERVER = "shareSysPermissionServer";
 
   public static final String TOKEN_PREFIX = "Bearer ";

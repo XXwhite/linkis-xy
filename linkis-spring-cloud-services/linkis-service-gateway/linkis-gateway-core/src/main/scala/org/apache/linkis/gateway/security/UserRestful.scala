@@ -67,6 +67,7 @@ abstract class AbstractUserRestful extends UserRestful with Logging {
 
   override def doUserRequest(gatewayContext: GatewayContext): Unit = {
     val path = gatewayContext.getRequest.getRequestURI.replace(userRegex, "")
+    logger.info("logout path={}", path)
     val message = path match {
       case "register" => register(gatewayContext)
       case "login" =>
@@ -127,6 +128,11 @@ abstract class AbstractUserRestful extends UserRestful with Logging {
   protected def tryLogin(context: GatewayContext): Message
 
   def logout(gatewayContext: GatewayContext): Message = {
+    logger.info("logout userRestFul path={}", gatewayContext)
+    logger.info(
+      "GatewayConfiguration.ENABLE_SSO_LOGIN.getValue={}",
+      GatewayConfiguration.ENABLE_SSO_LOGIN.getValue
+    )
     GatewaySSOUtils.removeLoginUser(gatewayContext)
     if (GatewayConfiguration.ENABLE_SSO_LOGIN.getValue) {
       SSOInterceptor.getSSOInterceptor.logout(gatewayContext)

@@ -32,8 +32,12 @@ public abstract class FileSystem implements Fs {
   private static final Logger LOG = LoggerFactory.getLogger(FileSystem.class);
 
   protected String user;
-  private String defaultFilePerm = "rwxr-----"; // 740
-  private String defaultFolderPerm = "rwxr-x---"; // 750
+
+  // private String defaultFilePerm = "rwxr-----"; // 740
+  private String defaultFilePerm = "rwxrwx---"; // 770
+
+  // private String defaultFolderPerm = "rwxr-x---"; // 750
+  private String defaultFolderPerm = "rwxrwx---"; // 770
 
   public String getDefaultFilePerm() {
     return defaultFilePerm;
