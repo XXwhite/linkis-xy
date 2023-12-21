@@ -127,8 +127,8 @@ object EngineConnServer extends Logging {
         .getOrElse("user", Utils.getJvmUser)
     )
     logger.info("<<---------------------EngineConnServer Exit --------------------->>")
-    // this.engineCreationContext.setUser(engineConf.getOrElse("user", Utils.getJvmUser))
-    this.engineCreationContext.setUser("hadoop")
+    this.engineCreationContext.setUser(engineConf.getOrElse("user", Utils.getJvmUser))
+    // this.engineCreationContext.setUser("hadoop")
     // **** lichao修改
     this.engineCreationContext.setTicketId(engineConf.getOrElse(ECConstants.EC_TICKET_ID_KEY, ""))
     val host = CommonVars(Environment.ECM_HOST.toString, "127.0.0.1").getValue
@@ -151,7 +151,8 @@ object EngineConnServer extends Logging {
     }
     val jMap = new java.util.HashMap[String, String](engineConf.size)
     jMap.putAll(engineConf.asJava)
-    jMap.put("user", "hadoop")
+    // **** lichao修改
+    // jMap.put("user", "hadoop")
     this.engineCreationContext.setOptions(jMap)
     this.engineCreationContext.setArgs(args)
     EngineConnObject.setEngineCreationContext(this.engineCreationContext)

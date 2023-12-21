@@ -25,6 +25,7 @@ import org.apache.linkis.gateway.security.constants.Constants;
 import org.apache.linkis.gateway.security.entity.menhu.MHToken;
 import org.apache.linkis.gateway.security.entity.menhu.MHUserResult;
 import org.apache.linkis.gateway.security.entity.menhu.ResponseBase;
+import org.apache.linkis.gateway.security.utils.PinyinUtil;
 import org.apache.linkis.server.BDPJettyServerHelper;
 import org.apache.linkis.server.Message;
 import org.apache.linkis.server.conf.ServerConfiguration;
@@ -63,11 +64,11 @@ public class UserSSORestful {
     // String path = gatewayContext.getRequest().getRequestURI().replace(userURI, "");
     logger.info("***** UserSSORestful doUserRequest *****");
     Message message = null;
-    try {
+    /*try {
       message = checkLogin(gatewayContext);
-    } catch (Exception ex) {
-      message = loginSSO(gatewayContext);
-    }
+    } catch (Exception ex) {*/
+    message = loginSSO(gatewayContext);
+    // }
     gatewayContext.getResponse().write(JSON.toJSONString(message));
     gatewayContext.getResponse().setStatus(Message.messageToHttpStatus(message));
     gatewayContext.getResponse().sendResponse();
@@ -156,20 +157,27 @@ public class UserSSORestful {
     if (StringUtils.isBlank(responseUserInfo)) {
       return Message.error("未获取到用户信息").data("token", "");
     }
+    clearExpireCookie(gatewayContext);
     // 按照接口返回类型转化成实体类
-    // 请求接口成功
+    // 使用用户姓名拼音缩写+门户用户id
     ResponseBase getUserResponseBody = JSON.parseObject(responseUserInfo, ResponseBase.class);
     MHUserResult userResult =
         JSON.parseObject(JSON.toJSONString(getUserResponseBody.getData()), MHUserResult.class);
-    GatewaySSOUtils.setLoginUser(gatewayContext, userResult.getUser().getUserId());
+    GatewaySSOUtils.setLoginUser(
+        gatewayContext,
+        PinyinUtil.toPinyinSub(userResult.getUser().getUserName())
+            + userResult.getUser().getUserId());
 
     Message message =
         Message.ok("login successful(登录成功)！")
-            .data("userName", userResult.getUser().getUserId())
+            .data(
+                "userName",
+                PinyinUtil.toPinyinSub(userResult.getUser().getUserName())
+                    + userResult.getUser().getUserId())
             .data("userCnName", userResult.getUser().getUserName())
             .data("isAdmin", false)
             .data("token", tokenResult.getToken());
-    clearExpireCookie(gatewayContext);
+
     return message;
   }
 

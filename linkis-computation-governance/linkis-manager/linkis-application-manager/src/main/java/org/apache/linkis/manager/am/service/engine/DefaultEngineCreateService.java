@@ -103,7 +103,7 @@ public class DefaultEngineCreateService extends AbstractEngineService
       throws LinkisRetryException {
     long startTime = System.currentTimeMillis();
     // **** lichao 修改
-    engineCreateRequest.setUser("hadoop");
+    // engineCreateRequest.setUser("hadoop");
     String taskId = JobUtils.getJobIdFromStringMap(engineCreateRequest.getProperties());
     logger.info("Task: {} start to create Engine for request: {}.", taskId, engineCreateRequest);
     LabelBuilderFactory labelBuilderFactory = LabelBuilderFactoryContext.getLabelBuilderFactory();

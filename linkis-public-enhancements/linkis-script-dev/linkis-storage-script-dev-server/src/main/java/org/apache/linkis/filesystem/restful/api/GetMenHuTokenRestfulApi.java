@@ -21,6 +21,7 @@ import org.apache.linkis.filesystem.conf.WorkSpaceConfiguration;
 import org.apache.linkis.filesystem.constant.WorkSpaceConstants;
 import org.apache.linkis.filesystem.entity.menhu.*;
 import org.apache.linkis.filesystem.util.HttpUtils;
+import org.apache.linkis.filesystem.util.PinyinUtil;
 import org.apache.linkis.server.Message;
 
 import org.apache.commons.lang.StringUtils;
@@ -150,7 +151,9 @@ public class GetMenHuTokenRestfulApi {
         MHUserResult userResult =
             JSON.parseObject(JSON.toJSONString(getUserResponseBody.getData()), MHUserResult.class);
         loginBaseInfo.setUsername(userResult.getUser().getUserName());
-        loginBaseInfo.setUserId(userResult.getUser().getUserId());
+        loginBaseInfo.setUserId(
+            PinyinUtil.toPinyinSub(userResult.getUser().getUserName())
+                + userResult.getUser().getUserId());
       }
       return Message.ok("").data("data", loginBaseInfo);
     }

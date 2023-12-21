@@ -228,10 +228,10 @@ class SparkEngineConnFactory extends MultiExecutorEngineConnFactory with Logging
     if (SparkConfiguration.LINKIS_SPARK_ETL_SUPPORT_HUDI.getValue) {
       conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
     }
-    val path = new File(getKeytabPath(null), "hadoop" + ".keytab").getPath
+    val path = new File(getKeytabPath(null), Utils.getJvmUser + ".keytab").getPath
     logger.info("******* lichao SparkEngineConnFactory createSparkSession path={}", path)
-    UserGroupInformation.setConfiguration(getConfigurationByLabel("hadoop", null))
-    UserGroupInformation.loginUserFromKeytab("hadoop", path)
+    UserGroupInformation.setConfiguration(getConfigurationByLabel(Utils.getJvmUser, null))
+    UserGroupInformation.loginUserFromKeytab(Utils.getJvmUser, path)
     val builder = SparkSession.builder.config(conf)
     builder.enableHiveSupport().getOrCreate()
   }

@@ -224,12 +224,14 @@ object HDFSUtils extends Logging {
       logger.info("*******lichao getUserGroupInformation 1");
       if (!isKeytabProxyUserEnabled(label)) {
         logger.info("*******lichao getUserGroupInformation 2");
-        val path = new File(getKeytabPath(label), "hadoop" + ".keytab").getPath
+        // val path = new File(getKeytabPath(label), "hadoop" + ".keytab").getPath
+        val path = new File(getKeytabPath(label), userName + ".keytab").getPath
         val user = getKerberosUser(userName, label)
         logger.info("*******lichao getUserGroupInformation user=" + user);
         logger.info("*******lichao getUserGroupInformation path=" + path);
         UserGroupInformation.setConfiguration(getConfigurationByLabel(userName, label))
-        UserGroupInformation.loginUserFromKeytabAndReturnUGI("hadoop", path)
+        // UserGroupInformation.loginUserFromKeytabAndReturnUGI("hadoop", path)
+        UserGroupInformation.loginUserFromKeytabAndReturnUGI(userName, path)
       } else {
         val superUser = getKeytabSuperUser(label)
         val path = new File(getKeytabPath(label), superUser + ".keytab").getPath

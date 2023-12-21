@@ -107,6 +107,7 @@ public class ShareSystemPermissionTabServer {
               // 比对表名是否在权限列表里
               List<ShareSystemDBInfoResponse> permissionTabList = responseBody.getData();
               logger.info("permissionTabList={}", JSON.toJSONString(permissionTabList));
+              logger.info("tableNameList={}", JSON.toJSONString(tableNameList));
               // 记录sql中用户没有权限的表
               List<String> noPermissionTabList = new ArrayList<>();
               noPermissionTabList.addAll(tableNameList);
@@ -114,7 +115,7 @@ public class ShareSystemPermissionTabServer {
                 for (ShareSystemDBInfoResponse dbInfoResponse : permissionTabList) {
                   // 库名.表名写法校验
                   if (tabName.contains(".")) {
-                    String[] dbAndTable = tabName.split(".");
+                    String[] dbAndTable = tabName.split("\\.");
                     if (dbInfoResponse.getDatabaseName().equals(dbAndTable[0])
                         && dbInfoResponse.getTableName().contains(dbAndTable[1])) {
                       noPermissionTabList.remove(tabName);

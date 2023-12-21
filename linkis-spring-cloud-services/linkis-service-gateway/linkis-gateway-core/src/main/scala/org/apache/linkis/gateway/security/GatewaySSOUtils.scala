@@ -112,6 +112,7 @@ object GatewaySSOUtils extends Logging {
   }
 
   def removeLoginUser(gatewayContext: GatewayContext): Unit = {
+    logger.info("GatewaySSOUtils removeLoginUser start")
     SSOUtils.removeLoginUser(gatewayContext.getRequest.getCookies.asScala.flatMap(_._2).toArray)
     SSOUtils.removeLoginUserByAddCookie(c => {
       if (cookieDomainSetupSwitch) {

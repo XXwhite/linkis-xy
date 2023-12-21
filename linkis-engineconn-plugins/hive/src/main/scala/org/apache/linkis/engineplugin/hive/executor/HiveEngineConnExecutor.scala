@@ -203,7 +203,7 @@ class HiveEngineConnExecutor(
         val hiveResponse: CommandProcessorResponse =
           if (!HiveDriverProxy.isIDriver(driver.getDriver())) {
             var compileRet = -1
-            Utils.tryCatch {
+            Utils.tryCatch  {
               compileRet = driver.compile(realCode)
               logger.info(s"driver compile realCode : ${realCode} finished, status : ${compileRet}")
               if (0 != compileRet) {

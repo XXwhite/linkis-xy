@@ -109,8 +109,8 @@ class HiveEngineConnFactory extends ComputationSingleExecutorEngineConnFactory w
   def doCreateHiveConcurrentSession(options: util.Map[String, String]): HiveConcurrentSession = {
     val hiveConf: HiveConf = getHiveConf(options)
     // lichao修改华为kerberose认证使用统一hadoop用户
-    // val ugi = HDFSUtils.getUserGroupInformation(Utils.getJvmUser)
-    val ugi = HDFSUtils.getUserGroupInformation("hadoop")
+    val ugi = HDFSUtils.getUserGroupInformation(Utils.getJvmUser)
+    // val ugi = HDFSUtils.getUserGroupInformation("hadoop")
     val baos = new ByteArrayOutputStream()
     val sessionState: SessionState = getSessionState(hiveConf, ugi, baos)
     HiveConcurrentSession(sessionState, ugi, hiveConf, baos)
@@ -120,13 +120,13 @@ class HiveEngineConnFactory extends ComputationSingleExecutorEngineConnFactory w
 
     val hiveConf: HiveConf = getHiveConf(options)
     // lichao修改华为kerberose认证使用统一hadoop用户
-    // val ugi = HDFSUtils.getUserGroupInformation(Utils.getJvmUser)
-    val path = new File(getKeytabPath(null), "hadoop" + ".keytab").getPath
+    val ugi = HDFSUtils.getUserGroupInformation(Utils.getJvmUser)
+    val path = new File(getKeytabPath(null), Utils.getJvmUser + ".keytab").getPath
     logger.info("******* lichao SparkEngineConnFactory createSparkSession path={}", path)
-    UserGroupInformation.setConfiguration(getConfigurationByLabel("hadoop", null))
-    UserGroupInformation.loginUserFromKeytab("hadoop", path)
+    UserGroupInformation.setConfiguration(getConfigurationByLabel(Utils.getJvmUser, null))
+    UserGroupInformation.loginUserFromKeytab(Utils.getJvmUser, path)
     logger.info("***** lichao HiveEngineConnFactory doCreateHiveSession start")
-    val ugi = HDFSUtils.getUserGroupInformation("hadoop")
+    // val ugi = HDFSUtils.getUserGroupInformation("hadoop")
     logger.info("***** lichao HiveEngineConnFactory doCreateHiveSession ugi=" + ugi.toString)
     logger.info("***** lichao HiveEngineConnFactory doCreateHiveSession ugi=" + ugi)
     val baos = new ByteArrayOutputStream()
