@@ -271,6 +271,9 @@ abstract class ComputationExecutor(val outputPrintLimit: Int = 1000)
             TaskResponseErrorEvent(engineConnTask.getTaskId, errorExecuteResponse.message)
           )
           transformTaskStatus(engineConnTask, ExecutionNodeStatus.Failed)
+        // XiongYi
+        case _ =>
+          logger.warn(s"task get response is $executeResponse")
       }
       executeResponse
     }
